@@ -2,6 +2,10 @@ defmodule MapTraverseTest do
   use ExUnit.Case
   doctest MapTraverse
 
+  defmodule TestTraverse do
+    use MapTraverse, descendants_key: "nodes", id_key: "node_id"
+  end
+
   setup do
 
     tree = %{
@@ -50,40 +54,40 @@ defmodule MapTraverseTest do
   end
 
   test "find can return top level node", %{tree: tree} do
-    node = MapTraverse.find(tree, "node_id", 1)
+    node = TestTraverse.find(tree, "node_id", 1)
     assert node["text"] == "this is node 1"
     assert node["nodes"] |> Enum.count == 3
   end
 
   test "find can return second-level nested node", %{tree: tree} do
-    node = MapTraverse.find(tree, "node_id", 3)
+    node = TestTraverse.find(tree, "node_id", 3)
     assert node["text"] == "this is node 3"
     assert node["nodes"] |> Enum.count == 2
   end
 
   test "find can return third-level nested node", %{tree: tree} do
-    node = MapTraverse.find(tree, "node_id", 6)
+    node = TestTraverse.find(tree, "node_id", 6)
     assert node["text"] == "this is node 6"
   end
 
   test "find can return node based on a condition", %{tree: tree} do
-    node = MapTraverse.find(tree, "condition", "123")
+    node = TestTraverse.find(tree, "condition", "123")
     assert node["text"] == "this is node 2"
   end
 
   test "find can be chained to return a nested result", %{tree: tree} do
-    node = MapTraverse.find(tree, "node_id", 1) |> MapTraverse.find("condition", "abc")
+    node = TestTraverse.find(tree, "node_id", 1) |> TestTraverse.find("condition", "abc")
     assert node["text"] == "this is node 3"
     assert node["nodes"] |> Enum.count == 2
   end
 
   test "find_child will return a direct descendent of the tree passed in if it exists", %{tree: tree} do
-    node = MapTraverse.find_child(tree, "condition", "abc")
+    node = TestTraverse.find_child(tree, "condition", "abc")
     assert node["text"] == "this is node 3"
   end
 
   test "find_child will return nil if a direct descendent of the tree passed in doesn't exist", %{tree: tree} do
-    node = MapTraverse.find_child(tree, "condition", "wasd")
+    node = TestTraverse.find_child(tree, "condition", "wasd")
     assert node == nil
   end
 end
