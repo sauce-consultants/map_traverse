@@ -15,10 +15,14 @@ defmodule MapTraverse do
       end
     
       def find_child(map, key, value) do
-        map[@descendants_key]
-        |> Enum.find(fn(x) ->
-          x |> Map.get(key) == value
-        end)
+        case map[@descendants_key] do
+          nil -> nil
+          descendants ->
+            descendants
+            |> Enum.find(fn(x) ->
+              x |> Map.get(key) == value
+            end)
+        end
       end
       
       defp walk(nil, _, _), do: nil

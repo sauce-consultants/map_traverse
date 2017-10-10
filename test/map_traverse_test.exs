@@ -90,4 +90,13 @@ defmodule MapTraverseTest do
     node = TestTraverse.find_child(tree, "condition", "wasd")
     assert node == nil
   end
+
+  test "find_child/1 returns nil when child nodes key is not found" do
+    tree = %{
+      "node_id" => 1,
+      "text" => "this is node 1",
+    }
+    node = TestTraverse.find_child(tree, "condition", "wasd")
+    assert node == nil
+  end
 end
